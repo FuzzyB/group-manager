@@ -6,5 +6,5 @@ namespace App\Modules\Payments\Infrastructure;
 
 interface EmployeeRepositoryInterface
 {
-    public function getList(): array;
+    public function getByDepartmentId(int $departmentId): array;
 }

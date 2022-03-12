@@ -12,5 +12,19 @@ interface SalaryCalculatorInterface
 
     public function getBonusType(): string;
 
-    public function calcBonus(DateTime $startOfWorkDay, $baseSalary): int;
+    public function getBonus(): int;
+
+    public function setBaseSalary(int $baseSalary): void;
+
+    public function setStartOfWorkDate(\DateTimeImmutable $startOfWorkDate): void;
+
+    public function setCalculationDate(\DateTimeImmutable $startOfWorkDate): void;
+
+    public function setBonusValue(float $percentBonus): void;
+
+    public function setEndOfWorkDate(?\DateTimeImmutable $endOfWorkDate): void;
+
+    public function getDaysWorkedInCalcMonth();
+
+    public function setEmployee(\App\Modules\Payments\Domain\Employee $employee): void;
 }

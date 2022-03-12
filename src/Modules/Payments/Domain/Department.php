@@ -10,20 +10,38 @@ use App\Modules\Payments\Infrastructure\SalaryCalculatorInterface;
 class Department
 {
 
+    const BONUS_TYPE_PERCENT = 'percent';
+    const BONUS_TYPE_AMOUNT = 'amount';
     private $employeeRepository;
+    private int $id;
 
-    public function __construct(EmployeeRepositoryInterface $employeeRepository)
+    public function __construct(int $id, string $name, string $bonusType, int|float $bonusValue)
     {
-        $this->employeeRepository = $employeeRepository;
-    }
-
-    public function getEmployees(): array
-    {
-        return $this->employeeRepository->getList();
+        $this->id = $id;
+        $this->name = $name;
+        $this->bonusType = $bonusType;
+        $this->bonusValue = $bonusValue;
     }
 
     public function getSalaryCalculator(): SalaryCalculatorInterface
     {
-        return new PercentSalaryCalculator();
+        if ($this->bonusType === self::BONUS_TYPE_PERCENT) {
+            $calculator = new PercentSalaryCalculator(0.3);
+            $calculator->setBonusValue($this->bonusValue);
+
+            return $calculator;
+        }
+
+        return new AmountSalaryCalculator();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
