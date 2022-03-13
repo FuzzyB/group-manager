@@ -7,7 +7,7 @@ namespace App\Modules\Payments\ReadRepository;
 use App\Modules\Payments\Domain\DepartmentFactory;
 use App\Modules\Payments\Infrastructure\DepartmentRepositoryInterface;
 
-class DepartmentRepository implements DepartmentRepositoryInterface
+class xxDepartmentRepository extends ServiceEntityRepository implements DepartmentRepositoryInterface
 {
     private DepartmentFactory $departmentFactory;
 
@@ -17,6 +17,11 @@ class DepartmentRepository implements DepartmentRepositoryInterface
     }
 
     public function getList()
+    {
+        $entityManage = $this->getEn
+    }
+
+    public function getListMock()
     {
         $queryResult = [
             [

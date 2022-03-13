@@ -7,15 +7,15 @@ namespace App\Modules\Payments\ReadRepository;
 use App\Modules\Payments\Domain\EmployeeFactory;
 use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
 
-class EmployeeRepository implements EmployeeRepositoryInterface
+class xxEmployeeRepository implements EmployeeRepositoryInterface
 {
 
-    public function __construct(EmployeeFactory $employeeFactory)
+    public function xx__construct(EmployeeFactory $employeeFactory)
     {
         $this->employeeFactory = $employeeFactory;
     }
 
-    public function getByDepartmentId(int $departmentId): array
+    public function gxetByDepartmentId(int $departmentId): array
     {
         $queryResult = [
             [
