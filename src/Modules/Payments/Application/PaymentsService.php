@@ -24,14 +24,14 @@ class PaymentsService
     public function generatePaymentList(\DateTimeImmutable $date): array
     {
         $departments = $this->departmentRepository->getList();
-        $reportItems = [];
+        $salaryPositions = [];
         /** @var Department $department */
         foreach ($departments as $department) {
             $employees = $this->employeeRepository->getByDepartmentId($department->getId());
-            $reportItems = array_merge($reportItems, $this->getSalaryList($department, $employees, $date));
+            $salaryPositions = array_merge($salaryPositions, $this->getSalaryList($department, $employees, $date));
         }
 
-        return $reportItems;
+        return $salaryPositions;
     }
 
     private function getSalaryList(Department $department, $employees, $reportDate): array
@@ -45,7 +45,7 @@ class PaymentsService
             $salaryCalculator->setEmployee($employee);
             $salaryCalculator->setCalculationDate($reportDate);
 
-            $item = [
+            $reportItems[] = [
                 'name' => $employee->getName(),
                 'surname' => $employee->getSurname(),
                 'departmentName' => $departmentName,
@@ -53,7 +53,6 @@ class PaymentsService
                 'salaryBonusType' => $salaryCalculator->getBonusType(),
                 'salary' => $salaryCalculator->calcSalary(),
             ];
-            $reportItems[] = $item;
         }
 
         return $reportItems;

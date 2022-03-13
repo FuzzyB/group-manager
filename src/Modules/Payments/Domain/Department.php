@@ -25,7 +25,8 @@ class Department
 
     public function getSalaryCalculator(): SalaryCalculatorInterface
     {
-        if ($this->bonusType === self::BONUS_TYPE_PERCENT) {
+        $onlyPercent = true;
+        if ($this->bonusType === self::BONUS_TYPE_PERCENT || $onlyPercent) {
             $calculator = new PercentSalaryCalculator(0.3);
             $calculator->setBonusValue($this->bonusValue);
 
