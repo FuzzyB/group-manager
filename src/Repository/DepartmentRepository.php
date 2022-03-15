@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Department;
+use App\Modules\Payments\Domain\DepartmentFactory;
+use App\Modules\Payments\Infrastructure\DepartmentRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -14,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Department[]    findAll()
  * @method Department[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DepartmentRepository extends ServiceEntityRepository
+class DepartmentRepository extends ServiceEntityRepository implements DepartmentRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -73,4 +75,18 @@ class DepartmentRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getList()
+    {
+        $departments = $this->createQueryBuilder('d')
+            ->getQuery()
+            ->getArrayResult();
+
+        $domainDepartments = [];
+        $factory = new DepartmentFactory();
+        foreach ($departments as $department) {
+            $domainDepartments[] = $factory->create($department);
+        }
+
+        return $domainDepartments;
+    }
 }

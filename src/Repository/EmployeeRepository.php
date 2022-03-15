@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Employee;
+use App\Modules\Payments\Domain\EmployeeFactory;
+use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -14,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Employee[]    findAll()
  * @method Employee[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class EmployeeRepository extends ServiceEntityRepository
+class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -73,4 +75,20 @@ class EmployeeRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getByDepartmentId(int $departmentId): array
+    {
+        $employees = $this->createQueryBuilder('d')
+            ->andWhere('d.id = :id')
+            ->setParameter('id', $departmentId)
+            ->getQuery()
+            ->getArrayResult()
+            ;
+        $factory = new EmployeeFactory();
+        $result = [];
+        foreach ($employees as $employee) {
+            $result[] = $factory->create($employee);
+        }
+
+        return $result;
+    }
 }

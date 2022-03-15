@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Modules\Payments\Domain;
 
 

@@ -10,15 +10,15 @@ class Employee
     private int $baseSalary;
     private string $name;
     private string $surname;
-    private \DateTimeImmutable $endOfWorkDate;
+    private ?\DateTimeImmutable $endOfWorkDate;
     private \DateTimeImmutable $startOfWorkDate;
 
     public function __construct(int $id,
         int $baseSalary,
         string $name,
         string $surname,
-        \DateTimeImmutable $endOfWorkDate,
-        \DateTimeImmutable $startOfWorkDate)
+        ?\DateTimeImmutable $endOfWorkDate,
+        ?\DateTimeImmutable $startOfWorkDate)
     {
         $this->id = $id;
         $this->baseSalary = $baseSalary;
@@ -48,7 +48,7 @@ class Employee
         return $this->surname;
     }
 
-    public function getEndOfWorkDate(): \DateTimeImmutable
+    public function getEndOfWorkDate(): ?\DateTimeImmutable
     {
         return $this->endOfWorkDate;
     }
