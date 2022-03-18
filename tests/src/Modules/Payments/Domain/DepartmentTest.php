@@ -15,8 +15,8 @@ class DepartmentTest extends TestCase
 
     protected function setUp(): void
     {
-        $employeeRepository = new EmployeeRepository();
-        $this->department = new Department($employeeRepository);
+
+        $this->department = new Department();
     }
     public function testGetEmployeesIsTypeOf()
     {

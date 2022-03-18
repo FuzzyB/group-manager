@@ -79,7 +79,7 @@ class DepartmentRepository extends ServiceEntityRepository implements Department
     {
         $departments = $this->createQueryBuilder('d')
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
         $domainDepartments = [];
         $factory = new DepartmentFactory();

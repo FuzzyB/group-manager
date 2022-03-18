@@ -3,15 +3,18 @@
 namespace App\Modules\Payments\Domain;
 
 
+use App\Entity\Department as DepartmentEntity;
+
 class DepartmentFactory
 {
-    public function create($config)
+    public function create(DepartmentEntity $departmentEntity)
     {
-        $id = $config['id'];
-        $name = $config['name'];
-        $bonusType = $config['bonusType'];
-        $bonusValue = $config['bonusValue'];
-
-        return new Department($id, $name, $bonusType, $bonusValue);
+        return new Department(
+            $departmentEntity->getId(),
+            $departmentEntity->getName(),
+            $departmentEntity->getBonusType(),
+            $departmentEntity->getBonusValue(),
+            $departmentEntity
+        );
     }
 }

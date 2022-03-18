@@ -81,7 +81,7 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
             ->andWhere('d.id = :id')
             ->setParameter('id', $departmentId)
             ->getQuery()
-            ->getArrayResult()
+            ->getResult()
             ;
         $factory = new EmployeeFactory();
         $result = [];
