@@ -30,15 +30,14 @@ class Department
 
     public function getSalaryCalculator(): SalaryCalculatorInterface
     {
-        $onlyPercent = true;
-        if ($this->bonusType === self::BONUS_TYPE_PERCENT || $onlyPercent) {
-            $calculator = new PercentSalaryCalculator(0.3);
-            $calculator->setBonusValue($this->bonusValue);
-
-            return $calculator;
+        $bonusValue = $this->entity->getBonusValue();
+        if ($this->bonusType === self::BONUS_TYPE_PERCENT) {
+            $calculator = new PercentSalaryCalculator($bonusValue);
+        } else {
+            $calculator = new AmountSalaryCalculator($bonusValue);
         }
 
-        return new AmountSalaryCalculator();
+        return $calculator;
     }
 
     public function getName()

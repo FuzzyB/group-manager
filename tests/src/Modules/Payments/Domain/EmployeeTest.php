@@ -13,13 +13,17 @@ class EmployeeTest extends TestCase
     /** @dataProvider getExperiences */
     public function testGetExperience($experience, $expected)
     {
-        $employee = new Employee();
-        $employee->setExperienceMonth($experience);
+        $startOfWorkDate = new \DateTimeImmutable();
+        $employeeEntity = new \App\Entity\Employee();
+
+        $employee = new Employee(1, 11000, 'tester', 'jednostkowy', null, $startOfWorkDate, $employeeEntity);
+
         $this->assertEquals($expected, $employee->getExperienceYears());
     }
 
     public function getExperiences()
     {
+        //@todo refactor to use start and End date of work
         return [
             [
                 15*12, 15

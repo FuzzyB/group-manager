@@ -1,61 +1,85 @@
 <?php
 
-
 namespace App\Modules\Payments\Domain;
-
 
 use App\Modules\Payments\Infrastructure\SalaryCalculatorInterface;
 
-class AmountSalaryCalculator implements SalaryCalculatorInterface
+class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculatorInterface
 {
+    const METHOD_TYPE = 'amount';
+    const MAX_EXPERIENCE_FOR_BONUS = 10;
+    public float $bonusValue;
+    public int $baseSalary;
+    public \DateTimeImmutable $startOfWorkDate;
+    public \DateTimeImmutable $calculationDate;
+    public ?\DateTimeImmutable $endOfWorkDate;
 
+    public function __construct(float $bonusValue)
+    {
+        $this->bonusValue = $bonusValue;
+    }
+
+    /**
+     * @return int
+     * @throws \Exception
+     */
     public function calcSalary(): int
     {
-        // TODO: Implement calcSalary() method.
+        if ($this->workedWholeMonth()) {
+            $salary = $this->baseSalary + $this->getBonus();
+        } else {
+            $days = $this->getDaysWorkedInCalcMonth();
+            $salaryPerDay = $this->baseSalary/$this->getDaysQuantityInCalcMonth();
+            $salary = floor($days * $salaryPerDay);
+        }
+
+        return $salary;
     }
 
     public function getBonusType(): string
     {
-        // TODO: Implement getBonusType() method.
+        return self::METHOD_TYPE;
     }
 
+    /**
+     * @return int
+     */
     public function getBonus(): int
     {
-        // TODO: Implement getBonus() method.
+        if ($this->bonusIsAvailable()) {
+            return $this->getExperienceInYears() * $this->bonusValue;
+        }
+
+        return 0;
     }
 
-    public function setBaseSalary(int $baseSalary): void
+    private function bonusIsAvailable()
     {
-        // TODO: Implement setBaseSalary() method.
+        $minExperienceDate = $this->startOfWorkDate->add(new \DateInterval('P1Y'));
+        return $minExperienceDate < $this->calculationDate;
     }
 
-    public function setStartOfWorkDate(\DateTimeImmutable $startOfWorkDate): void
+    public function setEmployee(Employee $employee): void
     {
-        // TODO: Implement setStartOfWorkDate() method.
+        $this->setEndOfWorkDate($employee->getEndOfWorkDate());
+        $this->setStartOfWorkDate($employee->getStartOfWorkDate());
+        $this->setBaseSalary($employee->getBaseSalary());
     }
 
-    public function setCalculationDate(\DateTimeImmutable $startOfWorkDate): void
+    private function getExperienceInYears()
     {
-        // TODO: Implement setCalculationDate() method.
+        $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
+        $interval = $firstDayDate->diff($this->startOfWorkDate);
+        $years = (int)$interval->format('%y');
+        return $years >= 10 ? $years : self::MAX_EXPERIENCE_FOR_BONUS;
     }
 
-    public function setBonusValue(float $percentBonus): void
+    /**
+     * @param float $bonusValue
+     * @return void
+     */
+    public function setBonusValue(float $bonusValue): void
     {
-        // TODO: Implement setBonusValue() method.
-    }
-
-    public function setEndOfWorkDate(?\DateTimeImmutable $endOfWorkDate): void
-    {
-        // TODO: Implement setEndOfWorkDate() method.
-    }
-
-    public function getDaysWorkedInCalcMonth()
-    {
-        // TODO: Implement getDaysWorkedInCalcMonth() method.
-    }
-
-    public function setEmployee(\App\Modules\Payments\Domain\Employee $employee): void
-    {
-        // TODO: Implement setEmployee() method.
+        $this->bonusValue = $bonusValue;
     }
 }

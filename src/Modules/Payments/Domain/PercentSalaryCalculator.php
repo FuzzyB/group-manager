@@ -11,7 +11,7 @@ class PercentSalaryCalculator implements SalaryCalculatorInterface
 {
 
     const METHOD_TYPE = 'percent';
-    private float $bonusPercent;
+    private float $bonusValue;
     private int $baseSalary;
     private \DateTimeImmutable $startOfWorkDate;
     private \DateTimeImmutable $calculationDate;
@@ -19,7 +19,7 @@ class PercentSalaryCalculator implements SalaryCalculatorInterface
 
     public function __construct(float $bonusPercent)
     {
-        $this->bonusPercent = $bonusPercent;
+        $this->bonusValue = $bonusPercent;
     }
 
     public function calcSalary(): int
@@ -43,7 +43,7 @@ class PercentSalaryCalculator implements SalaryCalculatorInterface
     public function getBonus(): int
     {
         if ($this->bonusIsAvailable()) {
-            return floor($this->baseSalary * $this->bonusPercent);
+            return floor($this->baseSalary * $this->bonusValue);
         }
 
         return 0;
@@ -63,22 +63,15 @@ class PercentSalaryCalculator implements SalaryCalculatorInterface
     {
         $this->calculationDate = $date;
     }
-    public function setBonusValue(float $percentBonus): void
+    public function setBonusValue(float $bonusValue): void
     {
-        $this->bonusPercent = $percentBonus;
+        $this->bonusValue = $bonusValue;
     }
 
     private function bonusIsAvailable():bool
     {
         $minExperienceDate = $this->startOfWorkDate->add(new \DateInterval('P1M'));
         return $minExperienceDate < $this->calculationDate;
-    }
-
-    private function salaryIsAvailable(): bool
-    {
-        $diff = $this->calculationDate->diff($this->startOfWorkDate);
-
-        return (int)$diff->format('%d') > 0;
     }
 
     /**

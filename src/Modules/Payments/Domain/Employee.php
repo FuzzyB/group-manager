@@ -87,4 +87,9 @@ class Employee
     {
         $this->entity = $entity;
     }
+
+    public function getExperienceYears()
+    {
+
+    }
 }

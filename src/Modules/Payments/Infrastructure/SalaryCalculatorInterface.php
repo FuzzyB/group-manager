@@ -4,6 +4,7 @@
 namespace App\Modules\Payments\Infrastructure;
 
 
+use App\Modules\Payments\Domain\Employee;
 use DateTime;
 
 interface SalaryCalculatorInterface
@@ -12,19 +13,9 @@ interface SalaryCalculatorInterface
 
     public function getBonusType(): string;
 
-    public function getBonus(): int;
-
-    public function setBaseSalary(int $baseSalary): void;
-
-    public function setStartOfWorkDate(\DateTimeImmutable $startOfWorkDate): void;
-
     public function setCalculationDate(\DateTimeImmutable $startOfWorkDate): void;
 
-    public function setBonusValue(float $percentBonus): void;
+    public function setEmployee(Employee $employee): void;
 
-    public function setEndOfWorkDate(?\DateTimeImmutable $endOfWorkDate): void;
-
-    public function getDaysWorkedInCalcMonth();
-
-    public function setEmployee(\App\Modules\Payments\Domain\Employee $employee): void;
+    public function getBonus(): int;
 }

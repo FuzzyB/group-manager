@@ -28,9 +28,6 @@ class Employee
     #[ORM\Column(type: 'date', nullable: true)]
     private $startOfWorkDate;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private $fk_department_id;
-
     #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'employees')]
     #[ORM\JoinColumn(nullable: false)]
     private $department;
@@ -96,18 +93,6 @@ class Employee
     public function setStartOfWorkDate(?\DateTimeInterface $startOfWorkDate): self
     {
         $this->startOfWorkDate = $startOfWorkDate;
-
-        return $this;
-    }
-
-    public function getFkDepartmentId(): ?int
-    {
-        return $this->fk_department_id;
-    }
-
-    public function setFkDepartmentId(?int $fk_department_id): self
-    {
-        $this->fk_department_id = $fk_department_id;
 
         return $this;
     }

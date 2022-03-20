@@ -73,4 +73,10 @@ class PaymentsService
 
         return $reportItems;
     }
+
+    public function getSalaryReport(mixed $filterCriteria)
+    {
+        $result = $this->salaryReportRepository->findAll();
+        return $result;
+    }
 }

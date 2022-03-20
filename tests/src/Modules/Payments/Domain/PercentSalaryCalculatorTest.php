@@ -15,7 +15,9 @@ class PercentSalaryCalculatorTest extends TestCase
 
     public function setUp(): void
     {
-        $this->department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, 0.2, new \App\Entity\Department());
+        $departamentEntity = new \App\Entity\Department();
+        $departamentEntity->setBonusValue(0.2);
+        $this->department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, 0.2, $departamentEntity);
     }
 
     /** @dataProvider calcBonusProvider */
