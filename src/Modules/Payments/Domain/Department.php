@@ -3,14 +3,11 @@
 
 namespace App\Modules\Payments\Domain;
 
-
-use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
 use App\Modules\Payments\Infrastructure\SalaryCalculatorInterface;
 use App\Entity\Department as DepartmentEntity;
 
 class Department
 {
-
     const BONUS_TYPE_PERCENT = 'percent';
     const BONUS_TYPE_AMOUNT = 'amount';
     private int $id;
@@ -28,6 +25,9 @@ class Department
         $this->entity = $entity;
     }
 
+    /**
+     * @return SalaryCalculatorInterface
+     */
     public function getSalaryCalculator(): SalaryCalculatorInterface
     {
         $bonusValue = $this->entity->getBonusValue();
@@ -40,7 +40,10 @@ class Department
         return $calculator;
     }
 
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return $this->name;
     }

@@ -15,18 +15,15 @@ class DepartmentTest extends TestCase
 
     protected function setUp(): void
     {
+        $departamentEntity = new \App\Entity\Department();
+        $departamentEntity->setBonusValue(10000);
+        $this->department = new Department(2, 'Accountant', Department::BONUS_TYPE_AMOUNT, 10000, $departamentEntity);
 
-        $this->department = new Department();
-    }
-    public function testGetEmployeesIsTypeOf()
-    {
-        $employees = $this->department->getEmployees();
-        $this->assertIsArray($employees);
     }
 
     public function testGetSalaryCalculator()
     {
-        $calculator = $this->department->getSalaryCalculator();
+        $calculator = $this->department->getSalaryCalculator(10000);
 
         $this->assertInstanceOf(SalaryCalculatorInterface::class, $calculator);
     }

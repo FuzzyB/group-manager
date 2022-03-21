@@ -43,6 +43,7 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
 
     /**
      * @return int
+     * @throws \Exception
      */
     public function getBonus(): int
     {
@@ -53,12 +54,19 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
         return 0;
     }
 
-    private function bonusIsAvailable()
+    /**
+     * @return bool
+     */
+    private function bonusIsAvailable(): bool
     {
         $minExperienceDate = $this->startOfWorkDate->add(new \DateInterval('P1Y'));
         return $minExperienceDate < $this->calculationDate;
     }
 
+    /**
+     * @param Employee $employee
+     * @return void
+     */
     public function setEmployee(Employee $employee): void
     {
         $this->setEndOfWorkDate($employee->getEndOfWorkDate());
@@ -66,12 +74,16 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
         $this->setBaseSalary($employee->getBaseSalary());
     }
 
-    private function getExperienceInYears()
+    /**
+     * @return int
+     * @throws \Exception
+     */
+    private function getExperienceInYears(): int
     {
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
         $interval = $firstDayDate->diff($this->startOfWorkDate);
         $years = (int)$interval->format('%y');
-        return $years >= 10 ? $years : self::MAX_EXPERIENCE_FOR_BONUS;
+        return $years <= 10 ? $years : self::MAX_EXPERIENCE_FOR_BONUS;
     }
 
     /**

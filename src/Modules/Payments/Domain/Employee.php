@@ -34,22 +34,23 @@ class Employee
         $this->entity = $employeeEntity;
     }
 
-    public function setExperienceMonth(float|int $experience)
-    {
-        $this->experience = $experience;
-    }
-
+    /**
+     * @return int
+     */
     public function getBaseSalary(): int
     {
         return $this->baseSalary;
     }
 
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getSurname()
+    public function getSurname(): string
     {
         return $this->surname;
     }
@@ -86,10 +87,5 @@ class Employee
     public function setEntity(EmployeeEntity $entity): void
     {
         $this->entity = $entity;
-    }
-
-    public function getExperienceYears()
-    {
-
     }
 }

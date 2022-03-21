@@ -6,22 +6,21 @@ namespace App\Form;
 
 class FilterCryteria
 {
+    /** @var string */
     private $sortByColumn;
+    /** @var string */
     private $orderType;
+    /** @var string */
     private $filterByColumn;
+    /** @var string */
     private $filterText;
-
-    public function __construct()
-     {
-//        $this->columnList = $columnList;
-//        $this->orderTypeList = $orderTypeList;
-//        $this->filterByColumns = $filterByColumns;
-     }
+    /** @var string */
+    private $auDate;
 
     /**
      * @return array
      */
-    public function getSortByColumn()
+    public function getSortByColumn(): string
     {
         return $this->sortByColumn;
     }
@@ -82,5 +81,21 @@ class FilterCryteria
         $this->filterText = $filterText;
     }
 
+    /**
+     * @param string $auDate
+     * @return void
+     */
+    public function setAuDate(string $auDate): void
+    {
+        $this->auDate = $auDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuDate(): string
+    {
+        return $this->auDate;
+    }
 
 }

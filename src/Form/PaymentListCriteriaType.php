@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -17,11 +16,11 @@ class PaymentListCriteriaType extends AbstractType
         $builder
             ->add('sortByColumn', ChoiceType::class, [
                 'choices'  => [
-                    'employee_name' => 'name',
-                    'employee_surname' => 'surname',
-                    'department_name' => 'department',
-                    'bonus_salary' => 'bonusSalary',
-                    'salary_bonus_type' => 'bonusType',
+                    'employeeName' => 'employeeName',
+                    'employeeSurname' => 'employeeSurname',
+                    'departmentName' => 'departmentName',
+                    'bonusSalary' => 'bonusSalary',
+                    'salaryBonusType' => 'salaryBonusType',
                     'salary' => 'salary',
                 ],
                 'label' => 'Sort by:'
@@ -34,9 +33,9 @@ class PaymentListCriteriaType extends AbstractType
             ])
             ->add('filterByColumn', ChoiceType::class, [
                 'choices'  => [
-                    'department_name' => 'department_name',
-                    'employee_name' => 'employee_name',
-                    'employee_surname' => 'employee_surname'
+                    'departmentName' => 'departmentName',
+                    'employeeName' => 'employeeName',
+                    'employeeSurname' => 'employeeSurname'
                 ],
             ])
             ->add('filterText', TextType::class, [
@@ -50,8 +49,6 @@ class PaymentListCriteriaType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
+        $resolver->setDefaults([]);
     }
 }

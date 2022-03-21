@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Modules\Payments\Domain;
-
 
 abstract class SalaryCalculator
 {
@@ -12,7 +10,7 @@ abstract class SalaryCalculator
      * @return int|string
      * @throws \Exception
      */
-    protected function getDaysWorkedInCalcMonth(): int
+    public function getDaysWorkedInCalcMonth(): int
     {
         if ($this->workedWholeMonth()) {
             return $this->getDaysQuantityInCalcMonth();
@@ -23,28 +21,55 @@ abstract class SalaryCalculator
         return 0;
     }
 
+    /**
+     * @param \DateTimeImmutable $date
+     * @return void
+     */
     public function setCalculationDate(\DateTimeImmutable $date): void
     {
         $this->calculationDate = $date;
     }
 
-    protected function getDaysQuantityInCalcMonth()
+    /**
+     * @return int
+     */
+    public function getDaysQuantityInCalcMonth()
     {
         return (int)$this->calculationDate->format('t');
     }
 
-
+    /**
+     * @param \DateTimeImmutable $startOfWorkDate
+     * @return void
+     */
     public function setStartOfWorkDate(\DateTimeImmutable $startOfWorkDate): void
     {
         $this->startOfWorkDate = $startOfWorkDate;
     }
 
+    /**
+     * @param int $baseSalary
+     * @return void
+     */
     public function setBaseSalary(int $baseSalary): void
     {
         $this->baseSalary = $baseSalary;
     }
 
-    protected function countWorkingDays(): int
+    /**
+     * @param float $bonusValue
+     * @return void
+     */
+    public function setBonusValue(float $bonusValue): void
+    {
+        $this->bonusValue = $bonusValue;
+    }
+
+    /**
+     * @return int
+     * @throws \Exception
+     */
+    public function countWorkingDays(): int
     {
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
         $firstDayOfNextMonth = $firstDayDate->add(new \DateInterval('P1M'));
@@ -71,7 +96,11 @@ abstract class SalaryCalculator
         return $days;
     }
 
-    protected function workedWholeMonth(): bool
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function workedWholeMonth(): bool
     {
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
         $firstDayOfNextMonth = $firstDayDate->add(new \DateInterval('P1M'));
@@ -80,12 +109,20 @@ abstract class SalaryCalculator
             (empty($this->endOfWorkDate) || $this->endOfWorkDate >= $firstDayOfNextMonth);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     private function workedPartOfMonth()
     {
         return $this->wasEmployedInTheMiddleOfCalcMonth()
             || $this->wasFiredInTheMiddleOfCalcMonth();
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     private function wasFiredInTheMiddleOfCalcMonth(): bool
     {
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
@@ -96,6 +133,10 @@ abstract class SalaryCalculator
             $this->endOfWorkDate >= $firstDayDate;
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     private function wasEmployedInTheMiddleOfCalcMonth(): bool
     {
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
@@ -105,6 +146,10 @@ abstract class SalaryCalculator
         return $this->startOfWorkDate >= $secondDayDate && $this->startOfWorkDate < $firstDayOfNextMonth;
     }
 
+    /**
+     * @param \DateTimeImmutable|null $endOfWorkDate
+     * @return void
+     */
     public function setEndOfWorkDate(?\DateTimeImmutable $endOfWorkDate): void
     {
         $this->endOfWorkDate = $endOfWorkDate;

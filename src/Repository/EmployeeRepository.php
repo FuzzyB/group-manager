@@ -47,44 +47,22 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
         }
     }
 
-    // /**
-    //  * @return Employee[] Returns an array of Employee objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Employee
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+    /**
+     * @param int $departmentId
+     * @return array
+     * @throws \Exception
+     */
     public function getByDepartmentId(int $departmentId): array
     {
-        $employees = $this->createQueryBuilder('d')
-            ->andWhere('d.id = :id')
+        $employees = $this->createQueryBuilder('e')
+            ->andWhere('e.department = :id')
             ->setParameter('id', $departmentId)
             ->getQuery()
             ->getResult()
             ;
         $factory = new EmployeeFactory();
         $result = [];
+
         foreach ($employees as $employee) {
             $result[] = $factory->create($employee);
         }

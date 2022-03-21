@@ -1,10 +1,7 @@
 <?php
 
-
 namespace App\Modules\Payments\Application;
 
-
-use App\Entity\SalaryReport;
 use App\Modules\Payments\Domain\Department;
 use App\Modules\Payments\Domain\Employee;
 use App\Modules\Payments\Infrastructure\DepartmentRepositoryInterface;
@@ -19,6 +16,12 @@ class PaymentsService
     private SalaryReportRepository $salaryReportRepository;
     private LoggerInterface $logger;
 
+    /**
+     * @param DepartmentRepositoryInterface $departmentRepository
+     * @param EmployeeRepositoryInterface $employeeRepository
+     * @param SalaryReportRepository $salaryReportRepository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         DepartmentRepositoryInterface $departmentRepository,
         EmployeeRepositoryInterface $employeeRepository,
@@ -32,6 +35,11 @@ class PaymentsService
         $this->logger = $logger;
     }
 
+    /**
+     * @param \DateTimeImmutable $date
+     * @return void
+     * @throws \Exception
+     */
     public function generatePaymentList(\DateTimeImmutable $date): void
     {
         $departments = $this->departmentRepository->getList();
@@ -39,7 +47,9 @@ class PaymentsService
             /** @var Department $department */
             foreach ($departments as $department) {
                 $employees = $this->employeeRepository->getByDepartmentId($department->getId());
-                $this->salaryReportRepository->saveSalaryList($this->getSalaryList($department, $employees, $date));
+                $this->salaryReportRepository->saveSalaryList(
+                    $this->getSalaryList($department, $employees, $date)
+                );
             }
         } catch (\Exception $exception){
             //@todo handle retry on fail
@@ -48,6 +58,12 @@ class PaymentsService
         }
     }
 
+    /**
+     * @param Department $department
+     * @param array $employees
+     * @param \DateTimeImmutable $reportDate
+     * @return array
+     */
     private function getSalaryList(Department $department, array $employees, \DateTimeImmutable $reportDate): array
     {
         $salaryCalculator = $department->getSalaryCalculator();
@@ -68,15 +84,19 @@ class PaymentsService
                 'salary' => $salaryCalculator->calcSalary(),
                 'department' => $department->getEntity(),
                 'employee' => $employee->getEntity(),
+                'auDate' => $reportDate,
             ];
         }
 
         return $reportItems;
     }
 
+    /**
+     * @param mixed $filterCriteria
+     * @return float|int|mixed|string
+     */
     public function getSalaryReport(mixed $filterCriteria)
     {
-        $result = $this->salaryReportRepository->findAll();
-        return $result;
+        return $this->salaryReportRepository->getSalaryReport($filterCriteria);
     }
 }

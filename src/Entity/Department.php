@@ -94,7 +94,6 @@ class Department
     public function removeEmployee(Employee $employee): self
     {
         if ($this->employees->removeElement($employee)) {
-            // set the owning side to null (unless already changed)
             if ($employee->getDepartment() === $this) {
                 $employee->setDepartment(null);
             }
