@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista płac!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+
+   thead th, tfoot th {
+       font-family: "Lucida Console", "Courier New", monospace;
+    }
+
+    th {
+        letter-spacing: 2px;
+    }
+
+    td {
+        letter-spacing: 1px;
+    }
+
+    tbody td {
+        text-align: center;
+    }
+
+    tfoot th {
+        text-align: right;
+    }
+
+</style>
+
+<div class="example-wrapper">
+    <h1>{{ controller_name }}! ✅</h1>
+
+    <ul>
+        <li>Generate report: <code><a href="/payments/generate-report" target="_blank">Generate payments list</a></code></li>
+    </ul>
+    <h1>Filters</h1>
+    {{ form(form) }}
+
+    {% if report %}
+    <h2>Salary report</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col" >Name</th>
+                <th scope="col">Surname</th>
+                <th scope="col">Department</th>
+                <th scope="col">Bonus type</th>
+                <th scope="col">Bonus salary</th>
+                <th scope="col">Salary</th>
+            </tr>
+            </thead>
+    {% endif %}
+    {% for line in report %}
+        <tr>
+            <td>{{line.employeeName}}</td>
+            <td>{{line.employeeSurname}}</td>
+            <td>{{line.departmentName}}</td>
+            <td>{{line.bonusSalary}}</td>
+            <td>{{line.salaryBonusType}}</td>
+            <td>{{line.salary}}</td>
+        </tr>
+    {% endfor %}
+
+    {% if report %}
+            </table>
+    {% endif %}
+</div>
+{% endblock %}

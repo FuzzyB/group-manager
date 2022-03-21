@@ -1,0 +1,11 @@
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation
+
+app_group_management:
+    path: /manage/groups
+    controller: App\Controller\ManageController::groupsAction
