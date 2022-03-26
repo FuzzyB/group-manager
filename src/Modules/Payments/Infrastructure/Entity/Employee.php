@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Modules\Payments\Infrastructure\Entity;
 
-use App\Repository\EmployeeRepository;
+use App\Modules\Payments\Infrastructure\Repository\EmployeeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]

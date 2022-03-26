@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Modules\Payments\Infrastructure\Repository;
 
-use App\Entity\SalaryReport;
-use App\Form\FilterCryteria;
+use App\Modules\Payments\Infrastructure\Entity\Department;
+use App\Modules\Payments\Infrastructure\Entity\Employee;
+use App\Modules\Payments\Infrastructure\Entity\SalaryReport;
+use App\Modules\Payments\Infrastructure\Form\FilterCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -17,8 +19,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SalaryReportRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry,
+        DepartmentRepository $departmentRepository,
+        EmployeeRepository $employeeRepository)
     {
+        $this->departmentRepository = $departmentRepository;
+        $this->employeeRepository = $employeeRepository;
         parent::__construct($registry, SalaryReport::class);
     }
 
@@ -54,19 +60,22 @@ class SalaryReportRepository extends ServiceEntityRepository
     {
         $batchSize = 100;
         $counter = 0;
-
         foreach ($salaryList as $list) {
 
+            /** @var Department $department */
+            $department = $this->departmentRepository->find($list['departmentId']);
+            /** @var Employee $employee */
+            $employee = $this->employeeRepository->find($list['employeeId']);
+
             $reportItem = new SalaryReport();
-            //@todo avoid duplications in db, find record or create
             $reportItem->setEmployeeName($list['name']);
             $reportItem->setEmployeeSurname($list['surname']);
             $reportItem->setDepartmentName($list['departmentName']);
             $reportItem->setBonusSalary($list['bonusSalary']);
             $reportItem->setSalaryBonusType($list['salaryBonusType']);
             $reportItem->setSalary($list['salary']);
-            $reportItem->setDepartment($list['department']);
-            $reportItem->setEmployee($list['employee']);
+            $reportItem->setDepartment($department);
+            $reportItem->setEmployee($employee);
             $reportItem->setAuDate($list['auDate']);
 
             $this->_em->persist($reportItem);
@@ -79,10 +88,10 @@ class SalaryReportRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param FilterCryteria $filterCriteria
+     * @param FilterCriteria $filterCriteria
      * @return float|int|mixed|string
      */
-    public function getSalaryReport(FilterCryteria $filterCriteria)
+    public function getSalaryReport(FilterCriteria $filterCriteria): array
     {
         $orderType = $filterCriteria->getOrderType() ?? 'ASC';
         $filterColumn = $filterCriteria->getFilterByColumn();
@@ -90,7 +99,7 @@ class SalaryReportRepository extends ServiceEntityRepository
         $filterPhrase = $filterCriteria->getFilterText() ?? '';
         $auDate = $filterCriteria->getAuDate();
 
-        return $this->createQueryBuilder('qb')
+        $result = $this->createQueryBuilder('qb')
             ->select('e.id')->distinct()
             ->addSelect('sr.employeeName')
             ->addSelect('sr.employeeSurname')
@@ -99,7 +108,7 @@ class SalaryReportRepository extends ServiceEntityRepository
             ->addSelect('sr.salaryBonusType')
             ->addSelect('sr.salary')
             ->addSelect('sr.au_date')->distinct()
-            ->from('App\Entity\SalaryReport', 'sr')
+            ->from('App\Modules\Payments\Infrastructure\Entity\SalaryReport', 'sr')
             ->join('sr.employee', 'e')
             ->andWhere('sr.'.$filterColumn . ' LIKE :filterColumn')
             ->andWhere('sr.au_date = :auDate')
@@ -107,9 +116,9 @@ class SalaryReportRepository extends ServiceEntityRepository
             ->setParameter('auDate', $auDate)
             ->groupBy('e.id, sr.employeeName, sr.employeeSurname, sr.departmentName, sr.bonusSalary, sr.salaryBonusType, sr.salary, sr.au_date')
             ->orderBy('sr.'.$sortByColumn, $orderType)
-            ->orderBy('sr.au_date', 'DESC')
             ->getQuery()
             ->getResult()
             ;
+        return !empty($result) ? $result : [];
     }
 }

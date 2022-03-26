@@ -4,15 +4,14 @@
 namespace App\Tests\src\Modules\Payments\Domain;
 
 
-use App\Modules\Payments\Domain\AmountSalaryCalculator;
-use App\Modules\Payments\Domain\Department;
+use App\Modules\Payments\Domain\Entity\Department;
 use PHPUnit\Framework\TestCase;
 
 class AmountSalaryCalculatorTest extends TestCase
 {
     public function setUp(): void
     {
-        $departamentEntity = new \App\Entity\Department();
+        $departamentEntity = new \App\Modules\Payments\Infrastructure\Entity\Department();
         $departamentEntity->setBonusValue(10000);
         $this->department = new Department(2, 'Accountant', Department::BONUS_TYPE_AMOUNT, 10000, $departamentEntity);
     }

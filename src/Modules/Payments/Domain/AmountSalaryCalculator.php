@@ -2,7 +2,7 @@
 
 namespace App\Modules\Payments\Domain;
 
-use App\Modules\Payments\Infrastructure\SalaryCalculatorInterface;
+use App\Modules\Payments\Domain\Interfaces\SalaryCalculatorInterface;
 
 class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculatorInterface
 {
@@ -14,9 +14,26 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
     public \DateTimeImmutable $calculationDate;
     public ?\DateTimeImmutable $endOfWorkDate;
 
-    public function __construct(float $bonusValue)
+    /**
+     * @param float $bonusPercent
+     * @param \DateTimeImmutable $reportDate
+     * @param \DateTimeImmutable|null $endOfWorkDate
+     * @param \DateTimeImmutable $startOfWorkDate
+     * @param int $baseSalary
+     */
+    public function __construct(
+        float $bonusPercent,
+        \DateTimeImmutable $reportDate,
+        ?\DateTimeImmutable $endOfWorkDate,
+        \DateTimeImmutable $startOfWorkDate,
+        int $baseSalary
+    )
     {
-        $this->bonusValue = $bonusValue;
+        $this->bonusValue = $bonusPercent;
+        $this->calculationDate = $reportDate;
+        $this->endOfWorkDate = $endOfWorkDate;
+        $this->startOfWorkDate = $startOfWorkDate;
+        $this->baseSalary = $baseSalary;
     }
 
     /**
@@ -36,6 +53,9 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
         return $salary;
     }
 
+    /**
+     * @return string
+     */
     public function getBonusType(): string
     {
         return self::METHOD_TYPE;
@@ -64,17 +84,6 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
     }
 
     /**
-     * @param Employee $employee
-     * @return void
-     */
-    public function setEmployee(Employee $employee): void
-    {
-        $this->setEndOfWorkDate($employee->getEndOfWorkDate());
-        $this->setStartOfWorkDate($employee->getStartOfWorkDate());
-        $this->setBaseSalary($employee->getBaseSalary());
-    }
-
-    /**
      * @return int
      * @throws \Exception
      */
@@ -83,15 +92,6 @@ class AmountSalaryCalculator extends SalaryCalculator implements SalaryCalculato
         $firstDayDate = new \DateTimeImmutable($this->calculationDate->format('Y-m-01'));
         $interval = $firstDayDate->diff($this->startOfWorkDate);
         $years = (int)$interval->format('%y');
-        return $years <= 10 ? $years : self::MAX_EXPERIENCE_FOR_BONUS;
-    }
-
-    /**
-     * @param float $bonusValue
-     * @return void
-     */
-    public function setBonusValue(float $bonusValue): void
-    {
-        $this->bonusValue = $bonusValue;
+        return min($years, self::MAX_EXPERIENCE_FOR_BONUS);
     }
 }

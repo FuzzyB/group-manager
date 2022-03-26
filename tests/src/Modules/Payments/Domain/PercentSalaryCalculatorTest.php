@@ -3,9 +3,7 @@
 
 namespace App\Tests\src\Modules\Payments\Domain;
 
-use App\Modules\Payments\Domain\Department;
-use App\Modules\Payments\Domain\PercentSalaryCalculator;
-use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
+use App\Modules\Payments\Domain\Entity\Department;
 use PHPUnit\Framework\TestCase;
 
 class PercentSalaryCalculatorTest extends TestCase
@@ -15,7 +13,7 @@ class PercentSalaryCalculatorTest extends TestCase
 
     public function setUp(): void
     {
-        $departamentEntity = new \App\Entity\Department();
+        $departamentEntity = new \App\Modules\Payments\Infrastructure\Entity\Department();
         $departamentEntity->setBonusValue(0.2);
         $this->department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, 0.2, $departamentEntity);
     }

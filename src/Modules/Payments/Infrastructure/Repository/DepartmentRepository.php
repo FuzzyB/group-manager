@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Repository;
+namespace App\Modules\Payments\Infrastructure\Repository;
 
-use App\Entity\Department;
-use App\Modules\Payments\Domain\DepartmentFactory;
-use App\Modules\Payments\Infrastructure\DepartmentRepositoryInterface;
+use App\Modules\Payments\Domain\Factory\DepartmentFactory;
+use App\Modules\Payments\Domain\Interfaces\DepartmentRepositoryInterface;
+use App\Modules\Payments\Infrastructure\Entity\Department;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,8 +22,9 @@ class DepartmentRepository extends ServiceEntityRepository implements Department
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Department $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Department $entity, bool $flush = true): void
     {
@@ -36,8 +35,9 @@ class DepartmentRepository extends ServiceEntityRepository implements Department
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Department $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Department $entity, bool $flush = true): void
     {

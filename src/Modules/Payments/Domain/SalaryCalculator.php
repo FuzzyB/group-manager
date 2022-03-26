@@ -22,47 +22,11 @@ abstract class SalaryCalculator
     }
 
     /**
-     * @param \DateTimeImmutable $date
-     * @return void
-     */
-    public function setCalculationDate(\DateTimeImmutable $date): void
-    {
-        $this->calculationDate = $date;
-    }
-
-    /**
      * @return int
      */
-    public function getDaysQuantityInCalcMonth()
+    public function getDaysQuantityInCalcMonth(): int
     {
         return (int)$this->calculationDate->format('t');
-    }
-
-    /**
-     * @param \DateTimeImmutable $startOfWorkDate
-     * @return void
-     */
-    public function setStartOfWorkDate(\DateTimeImmutable $startOfWorkDate): void
-    {
-        $this->startOfWorkDate = $startOfWorkDate;
-    }
-
-    /**
-     * @param int $baseSalary
-     * @return void
-     */
-    public function setBaseSalary(int $baseSalary): void
-    {
-        $this->baseSalary = $baseSalary;
-    }
-
-    /**
-     * @param float $bonusValue
-     * @return void
-     */
-    public function setBonusValue(float $bonusValue): void
-    {
-        $this->bonusValue = $bonusValue;
     }
 
     /**
@@ -144,14 +108,5 @@ abstract class SalaryCalculator
         $firstDayOfNextMonth = $firstDayDate->add(new \DateInterval('P1M'));
 
         return $this->startOfWorkDate >= $secondDayDate && $this->startOfWorkDate < $firstDayOfNextMonth;
-    }
-
-    /**
-     * @param \DateTimeImmutable|null $endOfWorkDate
-     * @return void
-     */
-    public function setEndOfWorkDate(?\DateTimeImmutable $endOfWorkDate): void
-    {
-        $this->endOfWorkDate = $endOfWorkDate;
     }
 }
