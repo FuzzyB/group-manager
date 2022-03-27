@@ -13,19 +13,19 @@ class DepartmentTest extends TestCase
 {
     private $department;
 
-    protected function setUp(): void
+    /** @dataProvider calcBonusProvider */
+    public function testGetSalaryCalculator($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary, $expectedSalary)
     {
-        $departamentEntity = new \App\Modules\Payments\Infrastructure\Entity\Department();
-        $departamentEntity->setBonusValue(10000);
-        $this->department = new Department(2, 'Accountant', Department::BONUS_TYPE_AMOUNT, 10000, $departamentEntity);
+        $department = new Department(2, 'Accountant', Department::BONUS_TYPE_AMOUNT, 10000);
+        $salaryCalculator = $department->getSalaryCalculator($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary);
 
+        $this->assertInstanceOf(SalaryCalculatorInterface::class, $salaryCalculator);
     }
 
-    public function testGetSalaryCalculator()
+    public function calcBonusProvider()
     {
-        $calculator = $this->department->getSalaryCalculator(10000);
-
-        $this->assertInstanceOf(SalaryCalculatorInterface::class, $calculator);
+        return [
+            'new employee' => [new \DateTimeImmutable(), null, new \DateTimeImmutable(), 110000, 0],
+        ];
     }
-
 }
