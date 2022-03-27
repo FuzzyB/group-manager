@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Modules\Payments\Infrastructure\Repository;
 
-use App\Entity\Employee;
-use App\Modules\Payments\Domain\EmployeeFactory;
-use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
+use App\Modules\Payments\Domain\Factory\EmployeeFactory;
+use App\Modules\Payments\Domain\Interfaces\EmployeeRepositoryInterface;
+use App\Modules\Payments\Infrastructure\Entity\Employee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -24,8 +24,9 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Employee $entity
+     * @param bool $flush
+     * @return void
      */
     public function add(Employee $entity, bool $flush = true): void
     {
@@ -36,8 +37,9 @@ class EmployeeRepository extends ServiceEntityRepository implements EmployeeRepo
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @param Employee $entity
+     * @param bool $flush
+     * @return void
      */
     public function remove(Employee $entity, bool $flush = true): void
     {

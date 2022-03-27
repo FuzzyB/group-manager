@@ -3,9 +3,7 @@
 
 namespace App\Tests\src\Modules\Payments\Domain;
 
-use App\Modules\Payments\Domain\Department;
-use App\Modules\Payments\Domain\PercentSalaryCalculator;
-use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
+use App\Modules\Payments\Domain\Entity\Department;
 use PHPUnit\Framework\TestCase;
 
 class PercentSalaryCalculatorTest extends TestCase
@@ -15,31 +13,25 @@ class PercentSalaryCalculatorTest extends TestCase
 
     public function setUp(): void
     {
-        $departamentEntity = new \App\Entity\Department();
+        $departamentEntity = new \App\Modules\Payments\Infrastructure\Entity\Department();
         $departamentEntity->setBonusValue(0.2);
         $this->department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, 0.2, $departamentEntity);
     }
 
     /** @dataProvider calcBonusProvider */
-    public function testCalcBonus($calculationDate, $startOfWorkDate, $baseSalary, $percentBonus, $expectedSalary)
+    public function testCalcBonus($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary, $expectedSalary)
     {
-        $salaryCalculator = $this->department->getSalaryCalculator();
-        $salaryCalculator->setBaseSalary($baseSalary);
-        $salaryCalculator->setStartOfWorkDate($startOfWorkDate);
-        $salaryCalculator->setBonusValue($percentBonus);
-        $salaryCalculator->setCalculationDate($calculationDate);
+        $department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, 0.2);
+        $salaryCalculator = $department->getSalaryCalculator($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary);
+
         $this->assertEquals($expectedSalary, $salaryCalculator->getBonus());
     }
 
     /** @dataProvider calculateSalaryProvider */
     public function testCalculateSalary($startOfWorkDate, $endOfWorkDate, $calculationDate, $baseSalary, $percentBonus, $expectedSalary)
     {
-        $salaryCalculator = $this->department->getSalaryCalculator();
-        $salaryCalculator->setBaseSalary($baseSalary);
-        $salaryCalculator->setStartOfWorkDate($startOfWorkDate);
-        $salaryCalculator->setBonusValue($percentBonus);
-        $salaryCalculator->setCalculationDate($calculationDate);
-        $salaryCalculator->setEndOfWorkDate($endOfWorkDate);
+        $department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, $percentBonus);
+        $salaryCalculator = $department->getSalaryCalculator($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary);
 
         $this->assertEquals($expectedSalary, $salaryCalculator->calcSalary());
     }
@@ -48,12 +40,9 @@ class PercentSalaryCalculatorTest extends TestCase
     public function testCountWorkingDaysInMonth($startOfWorkDate, $endOfWorkDate, $calculationDate, $expectedDays) {
         $baseSalary = 0;
         $percentBonus = 0.10;
-        $salaryCalculator = $this->department->getSalaryCalculator();
-        $salaryCalculator->setBaseSalary($baseSalary);
-        $salaryCalculator->setStartOfWorkDate($startOfWorkDate);
-        $salaryCalculator->setEndOfWorkDate($endOfWorkDate);
-        $salaryCalculator->setBonusValue($percentBonus);
-        $salaryCalculator->setCalculationDate($calculationDate);
+        $department = new Department(1, 'Logistic', Department::BONUS_TYPE_PERCENT, $percentBonus);
+        $salaryCalculator = $department->getSalaryCalculator($calculationDate, $endOfWorkDate, $startOfWorkDate, $baseSalary);
+
 
         $this->assertEquals($expectedDays, $salaryCalculator->getDaysWorkedInCalcMonth());
     }
@@ -85,10 +74,10 @@ class PercentSalaryCalculatorTest extends TestCase
     public function calcBonusProvider()
     {
         return [
-            'new employee' => [new \DateTimeImmutable(), new \DateTimeImmutable(), 110000, 0.1, 0],
-            'working less than 1 month' => [new \DateTimeImmutable(), new \DateTimeImmutable('-20 days'), 110000, 0.1, 0],
-            '5 years experience' => [new \DateTimeImmutable(), new \DateTimeImmutable('-5 years'), 110000, 0.1, 11000],
-            'Unemployed' => [new \DateTimeImmutable('-6 years'), new \DateTimeImmutable('-5 years'), 110000, 0.1, 0],
+            'new employee' => [new \DateTimeImmutable(), null, new \DateTimeImmutable('-5 months'), 110000, 22000],
+            'working less than 1 month' => [new \DateTimeImmutable(), new \DateTimeImmutable(), new \DateTimeImmutable('-20 days'), 110000, 0],
+            '5 years experience' => [new \DateTimeImmutable(), new \DateTimeImmutable(), new \DateTimeImmutable('-5 years'), 110000, 0],
+            'Unemployed' => [new \DateTimeImmutable(), new \DateTimeImmutable('-6 years'), new \DateTimeImmutable('-5 years'), 110000, 0],
         ];
     }
 }

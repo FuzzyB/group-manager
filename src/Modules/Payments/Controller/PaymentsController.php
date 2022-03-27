@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controller;
+namespace App\Modules\Payments\Controller;
 
-use App\Form\FilterCryteria;
-use App\Form\PaymentListCriteriaType;
 use App\Modules\Payments\Application\PaymentsService;
+use App\Modules\Payments\Infrastructure\Form\FilterCriteria;
+use App\Modules\Payments\Infrastructure\Form\PaymentListCriteriaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,20 +12,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PaymentsController extends AbstractController
 {
-    #[Route("/payments/report", name: 'payments/report')]
     public function index(Request $request, PaymentsService $paymentsService): Response
     {
-        $cryteriaForm = new FilterCryteria();
+        $criteriaForm = new FilterCriteria();
+        $criteriaForm->setAuDate((new \DateTime())->format('Y-m-01'));
+        $criteriaForm->setFilterByColumn($request->query->get('filterColumn') ?? '');
+        $criteriaForm->setFilterText(base64_decode($request->query->get('phrase'))  ?? '');
+        $criteriaForm->setOrderType($request->query->get('sortType') ?? '');
+        $criteriaForm->setSortByColumn($request->query->get('sortBy') ?? '');
 
-        $cryteriaForm->setAuDate((new \DateTime())->format('Y-m-01'));
-        $cryteriaForm->setFilterByColumn($request->query->get('filterColumn') ?? '');
-        $cryteriaForm->setFilterText(base64_decode($request->query->get('phrase'))  ?? '');
-        $cryteriaForm->setOrderType($request->query->get('sortType') ?? '');
-        $cryteriaForm->setSortByColumn($request->query->get('sortBy') ?? '');
-        $form = $this->createForm(PaymentListCriteriaType::class, $cryteriaForm);
+        $form = $this->createForm(PaymentListCriteriaType::class, $criteriaForm);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var FilterCryteria $filterCriteria */
+            /** @var FilterCriteria $filterCriteria */
             $filterCriteria = $form->getData();
 
             return $this->redirectToRoute('payments/report',
@@ -40,7 +39,7 @@ class PaymentsController extends AbstractController
         }
 
         if ($request->query->get('show') === '1') {
-            $report = $paymentsService->getSalaryReport($cryteriaForm);
+            $report = $paymentsService->getSalaryReport($criteriaForm);
         }
 
         return $this->renderForm('payment/report.html.twig', [
@@ -55,7 +54,6 @@ class PaymentsController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    #[Route('/payments/generate-report', name: 'generate-report')]
     public function generateReport(PaymentsService $paymentsService): Response
     {
         $reportDate = new \DateTimeImmutable((new  \DateTimeImmutable())->format('Y-m-01'));

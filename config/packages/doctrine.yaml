@@ -15,6 +15,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            Payments:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Modules/Payments/Infrastructure/Entity'
+                prefix: 'App\Modules\Payments\Infrastructure\Entity'
+                alias: App
 
 when@test:
     doctrine:

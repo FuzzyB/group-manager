@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Modules\Payments\Infrastructure;
+namespace App\Modules\Payments\Domain\Interfaces;
 
 
 interface EmployeeRepositoryInterface

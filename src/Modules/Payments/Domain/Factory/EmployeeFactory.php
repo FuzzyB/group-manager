@@ -1,15 +1,15 @@
 <?php
 
 
-namespace App\Modules\Payments\Domain;
+namespace App\Modules\Payments\Domain\Factory;
 
-
-use App\Entity\Employee as EmployeeEntity;
+use App\Modules\Payments\Domain\Entity\Employee;
+use App\Modules\Payments\Infrastructure\Entity\Employee as EmployeeEntity;
 
 class EmployeeFactory
 {
     /**
-     * @param $employeeEntity
+     * @param EmployeeEntity $employeeEntity
      * @return Employee
      * @throws \Exception
      */

@@ -1,24 +1,24 @@
 <?php
 
 
-namespace App\Form;
+namespace App\Modules\Payments\Infrastructure\Form;
 
 
-class FilterCryteria
+class FilterCriteria
 {
     /** @var string */
-    private $sortByColumn;
+    private string $sortByColumn;
     /** @var string */
-    private $orderType;
+    private string $orderType;
     /** @var string */
-    private $filterByColumn;
+    private string $filterByColumn;
+    /** @var string|null */
+    private string|null $filterText;
     /** @var string */
-    private $filterText;
-    /** @var string */
-    private $auDate;
+    private string $auDate;
 
     /**
-     * @return array
+     * @return string
      */
     public function getSortByColumn(): string
     {
@@ -26,7 +26,8 @@ class FilterCryteria
     }
 
     /**
-     * @param array $sortByColumn
+     * @param string $sortByColumn
+     * @return void
      */
     public function setSortByColumn(string $sortByColumn): void
     {
@@ -34,7 +35,7 @@ class FilterCryteria
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getOrderType(): string
     {
@@ -42,7 +43,8 @@ class FilterCryteria
     }
 
     /**
-     * @param array $orderType
+     * @param string $orderType
+     * @return void
      */
     public function setOrderType(string $orderType): void
     {
@@ -50,15 +52,16 @@ class FilterCryteria
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getFilterByColumn()
+    public function getFilterByColumn(): string
     {
         return $this->filterByColumn;
     }
 
     /**
-     * @param mixed $filterByColumn
+     * @param $filterByColumn
+     * @return void
      */
     public function setFilterByColumn($filterByColumn): void
     {
@@ -66,17 +69,18 @@ class FilterCryteria
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getFilterText()
+    public function getFilterText(): string|null
     {
         return $this->filterText;
     }
 
     /**
-     * @param mixed $filterText
+     * @param string|null $filterText
+     * @return void
      */
-    public function setFilterText($filterText): void
+    public function setFilterText(?string $filterText): void
     {
         $this->filterText = $filterText;
     }

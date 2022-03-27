@@ -2,11 +2,12 @@
 
 namespace App\Modules\Payments\Application;
 
-use App\Modules\Payments\Domain\Department;
-use App\Modules\Payments\Domain\Employee;
-use App\Modules\Payments\Infrastructure\DepartmentRepositoryInterface;
-use App\Modules\Payments\Infrastructure\EmployeeRepositoryInterface;
-use App\Repository\SalaryReportRepository;
+use App\Modules\Payments\Domain\Entity\Department;
+use App\Modules\Payments\Domain\Entity\Employee;
+use App\Modules\Payments\Domain\Interfaces\DepartmentRepositoryInterface;
+use App\Modules\Payments\Domain\Interfaces\EmployeeRepositoryInterface;
+use App\Modules\Payments\Domain\Interfaces\SalaryCalculatorInterface;
+use App\Modules\Payments\Infrastructure\Repository\SalaryReportRepository;
 use Psr\Log\LoggerInterface;
 
 class PaymentsService
@@ -52,7 +53,6 @@ class PaymentsService
                 );
             }
         } catch (\Exception $exception){
-            //@todo handle retry on fail
             $this->logger->info('GeneratePaymentError: ' . $exception->getMessage());
             throw $exception;
         }
@@ -66,14 +66,12 @@ class PaymentsService
      */
     private function getSalaryList(Department $department, array $employees, \DateTimeImmutable $reportDate): array
     {
-        $salaryCalculator = $department->getSalaryCalculator();
         $departmentName = $department->getName();
         $reportItems = [];
 
         /** @var Employee $employee */
         foreach ($employees as $employee) {
-            $salaryCalculator->setEmployee($employee);
-            $salaryCalculator->setCalculationDate($reportDate);
+            $salaryCalculator = $this->initSalaryCalculator($reportDate, $department, $employee);
 
             $reportItems[] = [
                 'name' => $employee->getName(),
@@ -82,8 +80,8 @@ class PaymentsService
                 'bonusSalary' => $salaryCalculator->getBonus(),
                 'salaryBonusType' => $salaryCalculator->getBonusType(),
                 'salary' => $salaryCalculator->calcSalary(),
-                'department' => $department->getEntity(),
-                'employee' => $employee->getEntity(),
+                'departmentId' => $department->getId(),
+                'employeeId' => $employee->getId(),
                 'auDate' => $reportDate,
             ];
         }
@@ -98,5 +96,25 @@ class PaymentsService
     public function getSalaryReport(mixed $filterCriteria)
     {
         return $this->salaryReportRepository->getSalaryReport($filterCriteria);
+    }
+
+    /**
+     * @param \DateTimeImmutable $reportDate
+     * @param Department $department
+     * @param Employee $employee
+     * @return SalaryCalculatorInterface
+     */
+    private function initSalaryCalculator(
+        \DateTimeImmutable $reportDate,
+        Department $department,
+        Employee $employee
+    ): SalaryCalculatorInterface
+    {
+        return $department->getSalaryCalculator(
+            $reportDate,
+            $employee->getEndOfWorkDate(),
+            $employee->getStartOfWorkDate(),
+            $employee->getBaseSalary()
+        );
     }
 }

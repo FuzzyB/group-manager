@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Modules\Payments\Infrastructure\Entity;
 
-use App\Repository\DepartmentRepository;
+use App\Modules\Payments\Infrastructure\Repository\DepartmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

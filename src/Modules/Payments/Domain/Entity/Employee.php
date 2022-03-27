@@ -1,10 +1,9 @@
 <?php
 
 
-namespace App\Modules\Payments\Domain;
+namespace App\Modules\Payments\Domain\Entity;
 
-
-use App\Entity\Employee as EmployeeEntity;
+use App\Modules\Payments\Infrastructure\Entity\Employee as EmployeeEntity;
 
 class Employee
 {
@@ -16,6 +15,15 @@ class Employee
     private \DateTimeImmutable $startOfWorkDate;
     private EmployeeEntity $entity;
 
+    /**
+     * @param int $id
+     * @param int $baseSalary
+     * @param string $name
+     * @param string $surname
+     * @param \DateTimeImmutable|null $endOfWorkDate
+     * @param \DateTimeImmutable|null $startOfWorkDate
+     * @param EmployeeEntity $employeeEntity
+     */
     public function __construct(int $id,
         int $baseSalary,
         string $name,
@@ -50,17 +58,26 @@ class Employee
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
     public function getSurname(): string
     {
         return $this->surname;
     }
 
+    /**
+     * @return \DateTimeImmutable|null
+     */
     public function getEndOfWorkDate(): ?\DateTimeImmutable
     {
         return $this->endOfWorkDate;
     }
 
-    public function getStartOfWorkDate()
+    /**
+     * @return \DateTimeImmutable
+     */
+    public function getStartOfWorkDate(): \DateTimeImmutable
     {
         return $this->startOfWorkDate;
     }

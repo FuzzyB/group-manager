@@ -1,7 +1,19 @@
-controllers:
-    resource: ../src/Controller/
-    type: annotation
-
+payments/report: 
+    path: payments/report
+    controller: App\Modules\Payments\Controller\PaymentsController::index
+    methods: POST|GET
+    defaults:
+        keepQueryParams: true
+        name: payments/report
+#controllers:
+#    resource: ../src/Controller/
+#    type: annotation
+    
+payments/generate-report:
+    path: payments/generate-report
+    controller: App\Modules\Payments\Controller\PaymentsController::generateReport
+    methods: GET
+    
 kernel:
     resource: ../src/Kernel.php
     type: annotation

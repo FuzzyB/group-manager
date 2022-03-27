@@ -2,7 +2,7 @@
 
 namespace App\Modules\Payments\Domain;
 
-use App\Modules\Payments\Infrastructure\SalaryCalculatorInterface;
+use App\Modules\Payments\Domain\Interfaces\SalaryCalculatorInterface;
 
 class PercentSalaryCalculator extends SalaryCalculator implements SalaryCalculatorInterface
 {
@@ -15,10 +15,24 @@ class PercentSalaryCalculator extends SalaryCalculator implements SalaryCalculat
 
     /**
      * @param float $bonusPercent
+     * @param \DateTimeImmutable $reportDate
+     * @param \DateTimeImmutable $endOfWorkDate
+     * @param \DateTimeImmutable $startOfWorkDate
+     * @param int $baseSalary
      */
-    public function __construct(float $bonusPercent)
+    public function __construct(
+        float $bonusPercent,
+        \DateTimeImmutable $reportDate,
+        ?\DateTimeImmutable $endOfWorkDate,
+        \DateTimeImmutable $startOfWorkDate,
+        int $baseSalary
+    )
     {
         $this->bonusValue = $bonusPercent;
+        $this->calculationDate = $reportDate;
+        $this->endOfWorkDate = $endOfWorkDate;
+        $this->startOfWorkDate = $startOfWorkDate;
+        $this->baseSalary = $baseSalary;
     }
 
     /**
@@ -64,10 +78,10 @@ class PercentSalaryCalculator extends SalaryCalculator implements SalaryCalculat
     private function bonusIsAvailable():bool
     {
         $minExperienceDate = $this->startOfWorkDate->add(new \DateInterval('P1M'));
-        return $minExperienceDate < $this->calculationDate;
+        return $this->workedWholeMonth() && $minExperienceDate < $this->calculationDate;
     }
 
-    public function setEmployee(\App\Modules\Payments\Domain\Employee $employee): void
+    public function setEmployee(Entity\Employee $employee): void
     {
         $this->setEndOfWorkDate($employee->getEndOfWorkDate());
         $this->setStartOfWorkDate($employee->getStartOfWorkDate());
